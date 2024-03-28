@@ -1,0 +1,142 @@
+/* Similar projects:
+ - https://github.com/SwansonRoss/a11y-style-sheet
+ - https://willmendesneto.com/posts/linting-web-accessibility-issues-in-your-html-using-just-css/
+ - https://dev.to/devmount/3-css-tricks-to-uncover-accessibility-issues-4fo8
+ */
+:root {
+    --nice-color: deeppink;
+    --nice-font: "Comic Sans MS", "Times New Roman", serif;
+    --nice-border: 5px dashed deeppink;
+}
+
+/* Missing html language attribute */
+html:not([lang]),
+html[lang=""] {
+    border-top: 20px solid var(--nice-color);
+}
+
+/* Missing alternative text for images */
+img:not([alt], [role="presentation"]) {
+    border: var(--nice-border);
+}
+
+/* Missing role and aria label for canvas */
+canvas:not([role]),
+canvas:not([aria-label]),
+canvas[role=""],
+canvas[aria-label=""] {
+    border: var(--nice-border);
+}
+
+/* highlight on links without valid href attribute */
+a[href="#"],
+a[href=""],
+a[href*="javascript:void(0)"] {
+    outline: var(--nice-border) !important;
+}
+
+/* highlight on empty anchors/buttons */
+a:empty:not([aria-label],[aria-labelledby]),
+button:empty:not([aria-label],[aria-labelledby]) {
+    border: var(--nice-border) !important;
+}
+
+/* <i> tag should not be used for icons */
+i.fa {
+    color: var(--nice-color) !important;
+    font-family: var(--nice-font) !important;
+    font-size: 3em !important;
+
+    &::after {
+        content: '⚠️ This code harms application accessibility!';
+        display: inline;
+    }
+}
+
+h1 h1,
+h1 ~ h1,
+h1 ~ * h1 {
+    color: var(--nice-color) !important;
+    font-family: var(--nice-font) !important;
+
+    &::after {
+        content: '⚠️ Page should have a single <h1>!' !important;
+        display: inline;
+    }
+}
+
+main main,
+main ~ main,
+main ~ * main {
+    border: var(--nice-border);
+
+    &::after {
+        content: '⚠️ Page should have a single <main>!' !important;
+        display: inline;
+    }
+}
+
+button div,
+button p,
+label div,
+label p {
+    color: var(--nice-color) !important;
+    font-family: var(--nice-font) !important;
+
+    &::after {
+        content: '⚠️ Invalid element, phrasing content expected!' !important; /* @see https://caninclude.glitch.me/can/include/ */
+        display: inline;
+    }
+}
+
+/* highlights label with invalid for attribute */
+label:not([for],:has(input)),
+label[for="#"],
+label[for=""] {
+    border: var(--nice-border) !important;
+}
+
+canvas:not([role]),
+canvas[role=""],
+canvas:not([aria-label],[aria-labelledby]),
+canvas[aria-labelledby=""],
+canvas[aria-label=""] {
+    border: var(--nice-border);
+}
+
+p ul,
+p dl,
+p ol {
+    &::after {
+        content: '⚠️ Invalid element, phrasing content expected!' !important; /* @see https://caninclude.glitch.me/can/include/ */
+        display: inline;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    div, p {
+        color: var(--nice-color) !important;
+        font-family: var(--nice-font) !important;
+
+        &::after {
+            content: '⚠️ Invalid element, phrasing content expected!' !important; /* @see https://caninclude.glitch.me/can/include/ */
+            display: inline;
+        }
+    }
+}
+
+/* highlight on all elements that are inside of lists but not a list item <li> and displays them with a var(--nice-color) outline.*/
+:is(ul, ol) > *:not(li) {
+    outline: var(--nice-border) !important;
+}
+
+/* Avoids div buttons from hell. More details in https://www.htmhell.dev/2-div-with-button-role/ */
+div[role="button"] {
+    color: var(--nice-font);
+    text-decoration: blink !important;
+}
